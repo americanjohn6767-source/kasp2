@@ -1,439 +1,255 @@
 * {
-  border: 0;
-  margin: 0;
-  padding: 0;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', -apple-system, sans-serif;
 }
 
-*,
-:after,
-:before {
-  box-sizing: border-box;
-}
-
-:active,
-:focus,
-a:active,
-a:focus {
-  outline: none;
-}
-
-aside,
-footer,
-header,
-nav {
-  display: block;
-}
-
-html,
 body {
-  -ms-text-size-adjust: 100%;
-  -moz-text-size-adjust: 100%;
-  -webkit-text-size-adjust: 100%;
-  font-size: 14px;
-  line-height: 1;
-  width: 100%;
-  height: 100%;
-  background-color: #fff;
-  font-family: Roboto, sans-serif;
-  overflow-x: hidden;
-}
-
-button,
-input,
-textarea {
-  font-family: inherit;
-}
-
-input::-ms-clear {
-  display: none;
-}
-
-button {
-  cursor: pointer;
-}
-
-button::-moz-focus-inner {
-  border: 0;
-  padding: 0;
-}
-
-a,
-a:hover,
-a:visited {
-  text-decoration: none;
-}
-
-ul li {
-  list-style: none;
-}
-
-img {
-  vertical-align: top;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-size: inherit;
-  font-weight: 400;
+    background-color: #fff;
+    color: #333;
+    overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .container {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  width: 100%;
-  background-color: #fff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
-.title {
-  text-align: center;
-  position: relative;
-  line-height: 48px;
-  padding: 6px 0;
+/* Шапка */
+.header {
+    padding: 10px 16px;
+    background: #fff;
 }
 
-.text-title {
-  display: inline-block;
-  color: #4a4a4a;
-  font-size: 18px;
-  font-weight: 500;
-  margin: 0;
-  vertical-align: middle;
+.title-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    height: 48px;
 }
 
 .back-icon {
-  position: absolute;
-  left: 22px;
-  top: 50%;
-  transform: translateY(-50%);
-  height: 17px;
+    position: absolute;
+    left: 0;
+    height: 20px;
+    cursor: pointer;
 }
 
-.btntab {
-  display: flex;
-  justify-content: center;
-  margin-top: 0px;
-  border: 1px solid #e0e0e0;
-  border-radius: 2px;
-  background-color: #e0e0e0;
-  border-radius: 8px;
+.text-title {
+    font-size: 19px;
+    font-weight: 500;
+    color: #4a4a4a;
 }
 
-.btntab input[type="radio"] {
-  display: none;
+/* --- ТАБЫ (ПЕРЕКЛЮЧАТЕЛИ) --- */
+.tabs-container {
+    padding: 8px 16px 16px;
+    background: #fff;
 }
 
-.btntab label {
-  width: 50%;
-  text-align: center;
-  color: #000000;
-  font-size: 14px;
-  padding: 8px 0;
-  cursor: pointer;
-  border-radius: 8px;
+.tabs-wrapper {
+    display: flex;
+    background: #f0f0f0; /* Серый фон подложки */
+    border-radius: 12px;
+    padding: 4px;
 }
 
-.btntab [id^="tab-btn"]:checked + label {
-  background: #ffffff;
-  color: #000000;
+.tab-btn {
+    flex: 1;
+    text-align: center;
+    padding: 10px 0;
+    font-size: 14px;
+    font-weight: 500;
+    color: #7a7a7a; /* Серый текст для неактивной вкладки */
+    border-radius: 9px;
+    cursor: pointer;
+    transition: all 0.25s ease;
 }
 
-.tab {
-  border-bottom: 2px solid #f2f2f2;
-  padding: 18px;
+/* Логика активной вкладки через радио-кнопки в HTML */
+#tab1:checked ~ .tabs-container label[for="tab1"],
+#tab2:checked ~ .tabs-container label[for="tab2"] {
+    background: #ffffff; /* Белый фон активной кнопки */
+    color: #2b6bcc;    /* Синий текст активной кнопки */
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1); /* Тень для объема */
 }
 
+/* Контент вкладок */
 .tab-content {
-  display: none;
+    display: none;
+    flex-grow: 1;
+    padding: 0 16px;
 }
 
-.tab-content.active {
-  display: block;
+#tab1:checked ~ #content-doc, 
+#tab2:checked ~ #content-req {
+    display: flex;
+    flex-direction: column;
 }
 
-.middle {
-  flex-grow: 1;
+/* --- ОБЛАСТЬ ФОТО (ЗУМ) --- */
+#preview-viewport {
+    width: 100%;
+    height: 60vh;
+    background: #fdfdfd;
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    touch-action: none;
 }
 
-.img-upload {
-  height: 50vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+#preview-img {
+    max-width: 100%;
+    max-height: 100%;
+    will-change: transform;
+    transform-origin: center;
+    transition: transform 0.1s ease-out;
 }
 
-.input-img {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
+.upload-placeholder {
+    text-align: center;
+    padding: 40px;
+    border: 2px dashed #ccc;
+    border-radius: 15px;
+    color: #888;
 }
 
-.input-file {
-  height: 0.1px;
-  opacity: 0;
-  overflow: hidden;
-  position: absolute;
-  width: 0.1px;
-  z-index: -1;
+/* --- РЕКВИЗИТЫ --- */
+.rekvizit-list {
+    list-style: none;
+    margin-top: 10px;
 }
 
-.input-file + label {
-  border: 1px solid #f14635;
-  border-radius: 20px;
-  color: #f14635;
-  font-size: large;
-  line-height: 60px;
-  text-align: center;
-  padding: 0 30px;
+.rekvizit-item {
+    border-bottom: 1px solid #f2f2f2;
+    padding: 12px 0;
+    position: relative;
 }
 
-.input-file + label:hover,
-.input-file:focus + label {
-  background-color: #f14635;
-  color: #fff;
+.rekvizit-item label {
+    display: block;
+    color: #a8a8a8;
+    font-size: 12px;
+    margin-bottom: 4px;
 }
 
-#document {
-  height: 70vh;
-  width: 100%;
+.rekvizit-item input {
+    width: 90%;
+    border: none;
+    font-size: 17px;
+    color: #333;
+    outline: none;
+    background: transparent;
+    font-weight: 400;
 }
 
-.rekvizit {
-  width: 100%;
-  padding: 0 16px 150px;
-  box-sizing: border-box;
+.copy-btn {
+    position: absolute;
+    right: 0;
+    bottom: 12px;
+    width: 22px;
+    cursor: pointer;
+    opacity: 0.7;
 }
 
-.rekvizit li {
-  border-bottom: 1px solid #f2f2f2;
-  margin-bottom: 12px;
-}
-
-.rekvizit li img {
-  height: 21px;
-  width: 26px;
-  vertical-align: middle;
-}
-
-.atritem {
-  color: #a8a8a8;
-  font-size: 12px;
-  margin: 14px 0 0;
-  display: block;
-}
-
-.rekitem {
-  color: #4a4a4a;
-  font-size: 18px;
-  margin: 8px 0 18px 0;
-  width: 85%;
-  border: none;
-}
-
-.btnfooter {
-  padding: 20px 17.5px 26px;
-}
-
-.btnfooter button {
-  font-size: 15px;
-  line-height: 52px;
-  width: 100%;
-}
-
-.btnfooter img {
-  display: inline-block;
-  margin-right: 3px;
-  vertical-align: middle;
-}
-
-.btnfooter #btnftr1 {
-  background-color: #2b6bcc;
-  color: #fff;
-  border-radius: 10px;
-  margin-bottom: 12px;
-}
-
-.btnfooter #btnftr2 {
-  border-radius: 10px;
-  margin-bottom: 52px;
-} 
-
-.qrbtn {
-  width: 24px;
-  height: 24px;
-}
-
-.uploadbtn {
-  width: 19px;
-  height: 19px;
-  margin-bottom: 4px;
-}
-
-.share {
-  background-color: #fff;
-  color: #2b6bcc;
-  border: 1px solid #2b6bcc;
-  border-radius: 18px;
-}
-
+/* --- КНОПКИ --- */
 .footer {
-  width: 100%;
-  margin-top: auto;
-  position: relative;
+    padding: 20px 0;
+    margin-top: auto;
 }
 
-#upload-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  margin-top: 30px;
+.btn-main {
+    width: 100%;
+    padding: 16px;
+    border-radius: 12px;
+    border: none;
+    font-size: 16px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    cursor: pointer;
 }
 
-#upload-label {
-  padding: 12px 24px;
-  background-color: #2b6bcc;
-  color: white;
-  border-radius: 10px;
-  font-size: 16px;
-  cursor: pointer;
-  margin-bottom: 20px;
-  text-align: center;
+.btn-blue {
+    background: #2b6bcc;
+    color: #fff;
 }
 
-#preview img {
-  max-width: 100%;
-  max-height: 64vh;
-  border-radius: 12px;
-  display: block;
-  margin: 0 auto;
-  transition: transform 0.05s linear;
-  touch-action: none;
-  will-change: transform;
+.btn-outline {
+    background: #fff;
+    color: #2b6bcc;
+    border: 1.5px solid #2b6bcc;
 }
 
-#preview {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 10px;
+.btn-main img {
+    height: 20px;
 }
 
-/* --- QR modal / bottom sheet --- */
+/* --- МОДАЛЬНОЕ ОКНО QR --- */
 .qr-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  display: none;
-  -webkit-tap-highlight-color: transparent;
-  font-family: inherit;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    display: none;
+    z-index: 1000;
+    align-items: flex-end;
 }
 
-.qr-backdrop {
-  position: absolute;
-  inset: 0;
-  background: transparent;
+.qr-overlay.active {
+    display: flex;
 }
 
 .qr-sheet {
-  position: absolute;
-  left: 50%;
-  transform: translate(-50%, 100%);
-  bottom: 0;
-  width: 100%;
-  max-width: 480px;
-  background: #ffffff;
-  border-radius: 18px 18px 0 0;
-  box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
-  overflow: hidden;
-  padding: 18px;
-  text-align: left;
-  -webkit-user-select: none;
-  transition: transform 0.3s ease;
+    width: 100%;
+    background: #fff;
+    border-radius: 24px 24px 0 0;
+    padding: 24px;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
 }
 
-.qr-overlay.open .qr-sheet {
-  transform: translate(-50%, 0);
+.qr-overlay.active .qr-sheet {
+    transform: translateY(0);
 }
 
-@media (max-width: 480px) {
-  .qr-sheet {
-    height: 50vh;
-    padding: 20px;
-  }
+.qr-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
 }
 
-.qr-close {
-  position: absolute;
-  right: 8px;
-  top: 8px;
-  width: 36px;
-  height: 36px;
-  background: transparent;
-  border: none;
-  font-size: 26px;
-  line-height: 1;
-  color: #9b9b9b;
-  cursor: pointer;
+.qr-header h3 {
+    font-size: 20px;
+    color: #333;
 }
 
-.qr-sheet-header h2 {
-  margin: 6px 0 10px;
-  font-size: 18px;
-  color: #444;
-  font-weight: 600;
+.qr-body {
+    text-align: center;
+    padding-bottom: 40px;
 }
 
-.qr-instruction {
-  color: #666;
-  font-size: 15px;
-  margin: 24px 0 17px;
-  text-align: center;
+.qr-img {
+    width: 160px;
+    height: 160px;
+    margin: 20px auto;
+    display: block;
 }
 
-.qr-image-wrap {
-  display: flex;
-  justify-content: center;
-  margin: 6px 0 14px;
-}
-
-.qr-image {
-  width: 140px;
-  height: 140px;
-  object-fit: contain;
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 6px 14px rgba(0,0,0,0.08);
-}
-
-.qr-or {
-  margin-top: 10px;
-  color: #999;
-  font-size: 14px;
-  text-align: center;
-}
-
-.qr-code {
-  margin-top: 6px;
-  font-size: 30px;
-  font-weight: 700;
-  letter-spacing: 3px;
-  color: black;
-  text-align: center;
-  margin-bottom: 40px;
-}
-
-.qr-overlay.open {
-  display: block;
-}
-
-.qr-overlay.open {
-  display: block;
+.qr-code-val {
+    font-size: 34px;
+    font-weight: 800;
+    letter-spacing: 6px;
+    color: #000;
+    margin-top: 10px;
 }
