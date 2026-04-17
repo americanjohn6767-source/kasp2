@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes"/>
+  <title>Kaspi.kz</title>
+  
+  <!-- Ссылки на оригинальные файлы -->
+  <link rel="stylesheet" href="style.css"/>
+  <link rel="manifest" href="manifest.json">
+  
+  <style>
+    #preview {
+      margin: -50px 0 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      max-height: 60vh;
+      overflow: hidden;
+      touch-action: none;
+      position: relative;
+    }
+
+    .zoomable-image {
+      max-width: none;
+      max-height: none;
+      border-radius: 12px;
+      touch-action: none;
+      user-select: none;
+      position: absolute;
+      left: 0;
+      top: 0;
+      transform-origin: 0 0;
+    }
+
+    .copy-icon {
+      height: 18px !important;
+      width: 22px !important;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="title">
+        <img src="arrow.png" alt="" class="back-icon"/>
+        <h1 class="text-title">Удостоверение личности</h1>
+      </div>
+
+      <div class="tab">
+        <div class="btntab">
+          <input type="radio" id="tab-btn-1" name="tab-btn" checked/>
+          <label for="tab-btn-1">Документ</label>
+
+          <input type="radio" id="tab-btn-2" name="tab-btn"/>
+          <label for="tab-btn-2">Реквизиты</label>
+        </div>
+      </div>
+    </div>
+
+    <div id="doc" class="tab-content active">
+      <div class="middle">
+        <div class="img-upload">
+          <div id="upload-container">
+            <input type="file" id="idupload" accept="image/*" style="display: none;"/>
+            <label for="idupload" id="upload-label" style="padding: 12px 24px; background: #2b6bcc; color: white; border-radius: 10px; font-size: 16px; cursor: pointer; display: inline-block; margin-bottom: 20px;">Загрузить</label>
+            <div id="preview" style="display: flex; justify-content: center;"></div>
+          </div>
+        </div>
+
+        <div class="footer">
+          <div class="btnfooter" id="docbtn">
+            <button id="btnftr1">
+              <img src="qr.png" alt="" class="qrbtn"/>
+              Предъявить документ
+            </button>
+            <button id="btnftr2" class="share" style="margin-bottom: 20px;">
+              <img src="upload.png" alt="" class="uploadbtn"/>
+              Отправить документ
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="req" class="tab-content">
+      <ul class="rekvizit">
+        <li>
+          <span class="atritem">ФИО</span>
+          <input type="text" maxlength="32" spellcheck="false" class="rekitem" id="1" style="margin-right: 25px;"/>
+          <img src="copy.png" alt="" class="copy-icon"/>
+        </li>
+        <li>
+          <span class="atritem">ИИН</span>
+          <input type="text" maxlength="12" spellcheck="false" class="rekitem" id="2" style="margin-right: 25px;"/>
+          <img src="copy.png" alt="" class="copy-icon"/>
+        </li>
+        <li>
+          <span class="atritem">Дата рождения</span>
+          <input type="text" maxlength="10" spellcheck="false" class="rekitem" id="3" style="margin-right: 25px;"/>
+          <img src="copy.png" alt="" class="copy-icon"/>
+        </li>
+        <li>
+          <span class="atritem">Номер документа</span>
+          <input type="text" maxlength="9" spellcheck="false" class="rekitem" id="4" style="margin-right: 25px;">
+          <img src="copy.png" alt="" class="copy-icon"/>
+        </li>
+        <li>
+          <span class="atritem">Дата выдачи</span>
+          <input type="text" maxlength="10" spellcheck="false" class="rekitem" id="5" style="margin-right: 25px;">
+          <img src="copy.png" alt="" class="copy-icon"/>
+        </li>
+        <li>
+          <span class="atritem">Срок действия</span>
+          <input type="text" maxlength="10" spellcheck="false" class="rekitem" id="6" style="margin-right: 25px;">
+          <img src="copy.png" alt="" class="copy-icon"/>
+        </li>
+      </ul>
+
+      <div class="footer">
+        <div class="btnfooter" id="docbtn" style="margin-bottom: 150px; margin-top: -150px;">
+          <button id="btnftr2_req" class="share" style="margin-left: auto;">
+            <img src="upload.png" alt="" class="uploadbtn"/>
+            Отправить реквизиты
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal for QR -->
+  <div id="qrOverlay" class="qr-overlay" aria-hidden="true">
+    <div class="qr-backdrop" id="qrBackdrop"></div>
+    <div class="qr-sheet" role="dialog" aria-modal="true" aria-label="Удостоверение личности">
+      <button class="qr-close" id="qrClose" aria-label="Закрыть">&times;</button>
+      <div class="qr-sheet-header">
+        <h2>Удостоверение личности</h2>
+      </div>
+      <div class="qr-sheet-body">
+        <p class="qr-instruction">Покажите QR-код сотруднику</p>
+        <div class="qr-image-wrap">
+          <img src="https://qci.qr-code.click/uploads/qr_codes/98Heo8.svg?v=1754986674" alt="QR-код" class="qr-image">
+        </div>
+        <p class="qr-or">или скажите код</p>
+        <p class="qr-code">080824</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const input = document.getElementById("idupload");
+      const preview = document.getElementById("preview");
+      const label = document.getElementById("upload-label");
+      const tabBtn1 = document.getElementById("tab-btn-1");
+      const tabBtn2 = document.getElementById("tab-btn-2");
+      const doc = document.getElementById("doc");
+      const req = document.getElementById("req");
+
+      function showImage(src) {
+        const img = document.createElement("img");
+        img.src = src;
+        preview.innerHTML = "";
+        preview.appendChild(img);
+        label.style.display = "none";
+      }
+
+      function updateTabs() {
+        if (tabBtn1.checked) {
+          doc.classList.add("active");
+          req.classList.remove("active");
+          const saved = localStorage.getItem("uploadedImage");
+          if (saved) {
+            showImage(saved);
+          } else {
+            label.style.display = "inline-block";
+            preview.innerHTML = "";
+          }
+        } else {
+          req.classList.add("active");
+          doc.classList.remove("active");
+          label.style.display = "none";
+          preview.innerHTML = "";
+        }
+      }
+
+      tabBtn1.addEventListener("change", updateTabs);
+      tabBtn2.addEventListener("change", updateTabs);
+
+      updateTabs();
+
+      input.addEventListener("change", function () {
+        const file = this.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          const src = e.target.result;
+          localStorage.setItem("uploadedImage", src);
+          showImage(src);
+        };
+        reader.readAsDataURL(file);
+      });
+
+      const rekvizitInputs = document.querySelectorAll('.rekvizit input');
+      rekvizitInputs.forEach((input, index) => {
+        const saved = localStorage.getItem('rekvizit' + index);
+        if (saved) input.value = saved;
+        input.addEventListener('input', () => {
+          localStorage.setItem('rekvizit' + index, input.value);
+        });
+      });
+    });
+
+    // Логика модального окна QR
+    (function(){
+      const openBtn = document.querySelector('#btnftr1');
+      const overlay = document.getElementById('qrOverlay');
+      const closeBtn = document.getElementById('qrClose');
+      const backdrop = document.getElementById('qrBackdrop');
+
+      if (!openBtn || !overlay) return;
+
+      function openModal() {
+        overlay.classList.add('open');
+        overlay.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeModal() {
+        overlay.classList.remove('open');
+        overlay.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+      }
+
+      openBtn.addEventListener('click', (e) => { e.preventDefault(); openModal(); });
+      closeBtn.addEventListener('click', closeModal);
+      backdrop.addEventListener('click', closeModal);
+      overlay.addEventListener('click', (e) => { if (e.target === overlay) closeModal(); });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && overlay.classList.contains('open')) closeModal();
+      });
+    })();
+
+    // Кнопка Поделиться
+    document.getElementById("btnftr2").addEventListener("click", async () => {
+      if (navigator.share) {
+        try {
+          await navigator.share({
+            title: "Kaspi.kz",
+            text: "Мои документы",
+            url: window.location.href
+          });
+        } catch (err) {
+          console.log("Отмена или ошибка");
+        }
+      } else {
+        alert("Ваш браузер не поддерживает функцию 'Поделиться'");
+      }
+    });
+  </script>
+</body>
+</html>
