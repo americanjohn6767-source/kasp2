@@ -308,20 +308,22 @@ h6 {
   text-align: center;
 }
 
-#preview {
-  overflow: hidden; /* Чтобы картинка не вылезала за края контейнера */
-  touch-action: none; /* Отключает стандартные жесты браузера, чтобы работал наш скрипт */
-  background: #f9f9f9;
-  border-radius: 12px;
-  min-height: 300px;
-}
-
 #preview img {
   max-width: 100%;
   max-height: 64vh;
+  border-radius: 12px;
   display: block;
-  transform-origin: center; /* Зум будет идти от центра картинки */
+  margin: 0 auto;
+  transition: transform 0.05s linear;
+  touch-action: none;
   will-change: transform;
+}
+
+#preview {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
 }
 
 /* --- QR modal / bottom sheet --- */
@@ -426,6 +428,10 @@ h6 {
   color: black;
   text-align: center;
   margin-bottom: 40px;
+}
+
+.qr-overlay.open {
+  display: block;
 }
 
 .qr-overlay.open {
