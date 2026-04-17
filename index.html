@@ -10,17 +10,21 @@
   <link rel="manifest" href="manifest.json">
   
   <style>
-    #preview {
-      margin: -50px 0 20px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      max-height: 60vh;
-      overflow: hidden;
-      touch-action: none;
-      position: relative;
-    }
+  #preview {
+  overflow: hidden; 
+  touch-action: none; 
+  background: #f9f9f9;
+  border-radius: 12px;
+  min-height: 300px;
+}
 
+#preview img {
+  max-width: 100%;
+  max-height: 64vh;
+  display: block;
+  transform-origin: center; 
+  will-change: transform;
+}
     .zoomable-image {
       max-width: none;
       max-height: none;
@@ -32,7 +36,89 @@
       top: 0;
       transform-origin: 0 0;
     }
+let currentScale = 1;
+let lastScale = 1;
+let posX = 0;
+let posY = 0;
+let startX = 0;
+let startY = 0;
+let initialDistance = 0;
 
+const previewContainer = document.getElementById("preview");
+
+// Функция для обновления трансформации картинки
+function updateTransform(img) {
+  if (!img) return;
+  // Ограничиваем масштаб (минимум 1, максимум 5)
+  if (currentScale < 1) currentScale = 1;
+  if (currentScale > 5) currentScale = 5;
+
+  img.style.transform = `translate(${posX}px, ${posY}px) scale(${currentScale})`;
+}
+
+previewContainer.addEventListener("touchstart", function(e) {
+  const img = previewContainer.querySelector("img");
+  if (!img) return;
+
+  if (e.touches.length === 2) {
+    // Начало пинч-зума (два пальца)
+    initialDistance = Math.hypot(
+      e.touches[0].clientX - e.touches[1].clientX,
+      e.touches[0].clientY - e.touches[1].clientY
+    );
+    lastScale = currentScale;
+  } else if (e.touches.length === 1) {
+    // Начало перемещения (один палец)
+    startX = e.touches[0].clientX - posX;
+    startY = e.touches[0].clientY - posY;
+  }
+}, { passive: false });
+
+previewContainer.addEventListener("touchmove", function(e) {
+  const img = previewContainer.querySelector("img");
+  if (!img) return;
+  e.preventDefault(); // Запрещаем скролл страницы при зуме
+
+  if (e.touches.length === 2) {
+    // Логика зума
+    const currentDistance = Math.hypot(
+      e.touches[0].clientX - e.touches[1].clientX,
+      e.touches[0].clientY - e.touches[1].clientY
+    );
+    const delta = currentDistance / initialDistance;
+    currentScale = lastScale * delta;
+    updateTransform(img);
+  } else if (e.touches.length === 1) {
+    // Логика перемещения (только если картинка увеличена)
+    if (currentScale > 1) {
+      posX = e.touches[0].clientX - startX;
+      posY = e.touches[0].clientY - startY;
+      updateTransform(img);
+    }
+  }
+}, { passive: false });
+
+// Сброс позиции, если пользователь сильно уменьшил картинку
+previewContainer.addEventListener("touchend", function(e) {
+  const img = previewContainer.querySelector("img");
+  if (!img) return;
+
+  if (currentScale <= 1) {
+    currentScale = 1;
+    posX = 0;
+    posY = 0;
+    img.style.transition = "transform 0.3s ease"; // Плавный возврат
+    updateTransform(img);
+    setTimeout(() => { img.style.transition = ""; }, 300);
+  }
+});
+
+// Сбрасывать зум при загрузке нового фото
+document.getElementById("idupload").addEventListener("change", function() {
+    currentScale = 1;
+    posX = 0;
+    posY = 0;
+});
     .copy-icon {
       height: 18px !important;
       width: 22px !important;
